@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import Home from '@/views/Home'
-// import Login from '@/views/Login'
 const Home = () => import(/* webpackChunkName: 'Home' */'@/views/Home') // 懒加载
 const Login = () => import(/* webpackChunkName: 'Login' */'@/views/Login')
+const About = () => import(/* webpackChunkName: 'About' */'@/views/About')
+const Notfind = () => import(/* webpackChunkName: 'About' */'@/views/404')
 
 Vue.use(VueRouter)
 
@@ -14,7 +14,7 @@ const routes = [
     component: Home,
     name: 'Home',
     meta: {
-      isLogin: false
+      isLogin: true
     }
   },
   {
@@ -22,7 +22,13 @@ const routes = [
     // component: r => require.ensure([], () => r(require('@/views/Login')), 'home'),
     component: Login,
     name: 'Login'
-  }
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: About
+  },
+  { path: '*', component: Notfind }
 ]
 
 export const router = new VueRouter({

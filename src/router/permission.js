@@ -1,13 +1,15 @@
 import { router } from './index'
 
 router.beforeEach((to, from, next) => {
+  console.log('sss', from, to)
   if(to.meta.isLogin) {
     let token = localStorage.getItem('token');
     if(token) {
-      console.log('token', token);
+      next();
     }else {
       next({
-        path: '/login'
+        path: '/login',
+        query: {redirect: to.fullPath} // 将跳转的路由path作为参数，登录成功后跳转到该路由
       })
     }
   }else {

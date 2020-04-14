@@ -20,7 +20,6 @@
 import AppHeader from '@/components/Header'
 import Search from '@/components/Search'
 import Movie from '@/components/Movie'
-import axios from "axios";
 const MOVIE_API_URL = "https://www.omdbapi.com/?s=man&apikey=4a3b711b";
 
 import { mapGetters, mapActions } from 'vuex'
@@ -39,56 +38,32 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
+    ...mapActions('movie', [
       'SEARCH_MOVIES_REQUEST',
       'SEARCH_MOVIES_SUCCESS',
       'SEARCH_MOVIES_FAILURE'
     ]),
     search(data) {
       this.SEARCH_MOVIES_REQUEST();
-      // this.$store.dispatch({
-      //   type: 'SEARCH_MOVIES_REQUEST'
-      // })
-      axios.get(`https://www.omdbapi.com/?s=${data}&apikey=4a3b711b`).then(res => {
-      if(res.data.Response === 'True') {
-        // this.$store.dispatch({
-        //   type: 'SEARCH_MOVIES_SUCCESS',
-        //   payload: res.data.Search
-        // })
-        this.SEARCH_MOVIES_SUCCESS({payload: res.data.Search})
-      }else {
-        this.SEARCH_MOVIES_FAILURE({error: res.data.Error})
-        // this.$store.dispatch({
-        //   type: 'SEARCH_MOVIES_FAILURE',
-        //   error: res.data.Error
-        // })
-      }
-    })
+      this.$axios.get(`https://www.omdbapi.com/?s=${data}&apikey=4a3b711b`).then(res => {
+        if(res.data.Response === 'True') {
+          this.SEARCH_MOVIES_SUCCESS({payload: res.data.Search})
+        }else {
+          this.SEARCH_MOVIES_FAILURE({error: res.data.Error})
+        }
+      })
     }
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters('movie', [
       'movies',
       'errorMessage',
       'loading'
     ]),
-    // movies() {
-    //   return this.$store.state.movies
-    // },
-    // errorMessage() {
-    //   return this.$store.state.errorMessage
-    // },
-    // loading() {
-    //   return this.$store.state.loading
-    // }
   },
   created() {
-    axios.get(MOVIE_API_URL).then(res => {
+    this.$axios.get(MOVIE_API_URL).then(res => {
       this.SEARCH_MOVIES_SUCCESS({payload: res.data.Search})
-      // this.$store.dispatch({
-      //   type: 'SEARCH_MOVIES_SUCCESS',
-      //   payload: res.data.Search
-      // })
     })
   },
 }
